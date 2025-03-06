@@ -1,8 +1,14 @@
 package com.example.demo.wallet;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 // import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +20,7 @@ import jakarta.validation.constraints.Size;
 public class Wallet {
 	
 	@Id // identify object
-//	@GeneratedValue //Provides for the specification of generation strategies for the values of primary keys. 
+	@GeneratedValue //Provides for the specification of generation strategies for the values of primary keys. 
 	private Integer id;
 	@NotNull(message = "Name cannot be null")
 //	Not null is not equal to not blank
@@ -34,6 +40,28 @@ public class Wallet {
 	private String password;
 	@NotBlank(message = "Confirm Password cannot be blank")
 	private String confirmPassword;
+	
+	@OneToOne // has attributes on cascasde delete to remove the entry if wallet is deleted
+	private Address address;
+	
+	@OneToMany
+	private Collection<Transaction> transactions= new ArrayList();
+
+	public Collection<Transaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(Collection<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 
 	public Wallet() {
 		super();

@@ -22,6 +22,11 @@ public class WalletController {
 		return this.walletService.createWallet(walet);
 	}
 	
+	@PostMapping("/wallet/addaddress/{email}")
+	public Wallet AddWalletAddress(@RequestBody Address address,@PathVariable("email") String email)throws WalletException {
+		return this.walletService.addaddresstowallet(address,email);
+	}
+	
 	@PostMapping("/wallet/update")
 	public Wallet UpdateWalletnamebyemail(@RequestBody Wallet walet)throws WalletException {
 		return this.walletService.updateWalletbyEmail(walet);
@@ -42,10 +47,21 @@ public class WalletController {
 		return this.walletService.addFunds(id,amount);
 	}
 	
-	@GetMapping("/wallet/withdraw/{id}/{amount}")
-	public Double withdrawFunds(@PathVariable("id") Integer id,@PathVariable("amount") Double amount) {
-		return this.walletService.withdrawFunds(id,amount);
+//	@GetMapping("/wallet/withdraw/{id}/{amount}")
+//	public Double withdrawFunds(@PathVariable("id") Integer id,@PathVariable("amount") Double amount) {
+//		return this.walletService.withdrawFunds(id,amount);
+//	}
+	
+	@PatchMapping("/wallet/withdraw/{email}/{amount}")
+	public Double withdrawFunds(@PathVariable("email") String email,@PathVariable("amount") Double amount)throws WalletException {
+		return this.walletService.withdrawFundswithtransactioninfo(email,amount);
 	}
+	
+//	Alternate Implementation
+//	@PatchMapping("/wallet/withdraw")
+//	public Double withdrawFunds(@RequestParam String email, @RequestParam Double amount) throws WalletException {
+//	    return this.walletService.withdrawFundswithtransactioninfo(email, amount);
+//	Use Case : /wallet/withdraw?email=user@example.com&amount=100.0
 	
 	@GetMapping("/wallet/betweenRange/{lowerrange}/{upperrange}")
 	public Collection<Wallet> withdrawFunds(@PathVariable("lowerrange") Double lowerrange,@PathVariable("upperrange") Double upperrange)throws WalletException {

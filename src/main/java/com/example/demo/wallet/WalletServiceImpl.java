@@ -1,9 +1,12 @@
 package com.example.demo.wallet;
 
+import java.awt.print.Pageable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -13,6 +16,10 @@ public class WalletServiceImpl implements WalletService {
 
 	@Autowired
 	private WalletRepository walletRepositoty;
+	@Autowired 
+	private AddressRepository addressrepository;
+	@Autowired
+	private TransactionRepository transactionrepository;
 
 	@Override
 	public Wallet createWallet(Wallet wallet)throws WalletException {
@@ -138,4 +145,41 @@ public class WalletServiceImpl implements WalletService {
 		}
 		return loginWalletinfo.get();
 	}
+
+	@Override
+	public Page<Wallet> getWalletsPaginated(Pageable pageable) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Wallet addaddresstowallet(Address newaddress, String email)throws WalletException {
+		Optional<Wallet> walletRetrieved = this.walletRepositoty.findByEmail(email);
+		if(walletRetrieved.isEmpty()) {
+			throw new WalletException("Wallet not found with email"+email);
+		}
+		Address savedAddress = this.addressrepository.save(newaddress);
+		Wallet newWalletinfo = walletRetrieved.get();
+		newWalletinfo.setAddress(savedAddress);
+		return this.walletRepositoty.save(newWalletinfo);
+	}
+
+	@Override
+	public Double withdrawFundswithtransactioninfo(String email, Double amount)throws WalletException {
+		Optional<Wallet> walletRetrieved = this.walletRepositoty.findByEmail(email);
+		if (walletRetrieved.isEmpty()) {
+			throw new WalletException("Wallet not found with email"+email);
+		}
+		Wallet WalletToBeOpdated = walletRetrieved.get();
+		if (WalletToBeOpdated.getBalance() < amount) {
+			throw new WalletException("Funds not sufficient to withdraw");
+		}
+		WalletToBeOpdated.setBalance(WalletToBeOpdated.getBalance() - amount);
+		Transaction newTransaction = new Transaction("Debit","Funds Withdraw",LocalDateTime.now());
+		newTransaction= this.transactionrepository.save(newTransaction);
+		WalletToBeOpdated.getTransactions().add(newTransaction);
+		this.walletRepositoty.save(WalletToBeOpdated);
+		return WalletToBeOpdated.getBalance();
+	}
+
 }
