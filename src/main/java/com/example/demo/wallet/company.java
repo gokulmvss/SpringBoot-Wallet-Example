@@ -1,5 +1,6 @@
 package com.example.demo.wallet;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import jakarta.persistence.Entity;
@@ -8,22 +9,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class company {
+public class Company {
 	@Id
 	@GeneratedValue
 	private Integer id;
 	private String name;
 	private String city;
 	
-	@OneToMany(mappedBy="id")
-	private Collection<Wallet> wallets;
+//	@OneToMany(mappedBy="id")
+//	private Collection<Wallet> wallets;
+	
+	@OneToMany(mappedBy="company")
+	private Collection<Wallet> wallets = new ArrayList<>();
 
-	public company() {
+	public Company() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public company(Integer id, String name, String city, Collection<Wallet> wallets) {
+	public Company(Integer id, String name, String city, Collection<Wallet> wallets) {
 		super();
 		this.id = id;
 		this.name = name;

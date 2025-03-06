@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class CompanyController {
 	@Autowired
 	private CompanyRepository companyrepository;
 	@PostMapping("/company")
-	public company addNewCompany(@RequestBody company newcompany) {
+	public Company addNewCompany(@RequestBody Company newcompany) {
 		return this.companyrepository.save(newcompany);
 	}
 	@GetMapping("/companies")
-	public Collection<company> getCompanies() {
+	public Collection<Company> getCompanies() {
 		return this.companyrepository.findAll();
 	}
 }

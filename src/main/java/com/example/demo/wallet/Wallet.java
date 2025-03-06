@@ -3,10 +3,14 @@ package com.example.demo.wallet;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 // import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
@@ -41,11 +45,51 @@ public class Wallet {
 	@NotBlank(message = "Confirm Password cannot be blank")
 	private String confirmPassword;
 	
+	public Wallet(
+			@NotNull(message = "Name cannot be null") @NotBlank(message = "Name cannot be blank") @Size(min = 3, max = 6, message = "Name must be between 3 and 6 charactera") String name,
+			@Min(value = 1000, message = "Minimum balance is 1000") Double balance) {
+		super();
+		this.name = name;
+		this.balance = balance;
+	}
+
 	@OneToOne // has attributes on cascasde delete to remove the entry if wallet is deleted
 	private Address address;
 	
 	@OneToMany
 	private Collection<Transaction> transactions= new ArrayList();
+	
+	@JsonIgnore
+	@ManyToOne()
+	@JoinColumn(name="company_id")
+	private Company company;
+
+	public Wallet(Integer id,
+			@NotNull(message = "Name cannot be null") @NotBlank(message = "Name cannot be blank") @Size(min = 3, max = 6, message = "Name must be between 3 and 6 charactera") String name,
+			@Min(value = 1000, message = "Minimum balance is 1000") Double balance,
+			@NotBlank(message = "Email cannot be blank") @Email(message = "Email should be valid") String email,
+			@NotBlank(message = "Password cannot be blank") @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$", message = "Password must be between 8 and 20 characters and contain at least one uppercase letter, one lowercase letter, one digit, and one special character") String password,
+			@NotBlank(message = "Confirm Password cannot be blank") String confirmPassword, Address address,
+			Collection<Transaction> transactions, com.example.demo.wallet.Company company) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.balance = balance;
+		this.email = email;
+		this.password = password;
+		this.confirmPassword = confirmPassword;
+		this.address = address;
+		this.transactions = transactions;
+		this.company = company;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
 
 	public Collection<Transaction> getTransactions() {
 		return transactions;
@@ -75,21 +119,7 @@ public class Wallet {
 //		
 //	}
 
-	public Wallet(Integer id, //this format is not necessary
-			@NotNull(message = "Name cannot be null") @NotBlank(message = "Name cannot be blank") @Size(min = 3, max = 6, message = "Name must be between 3 and 6 charactera") String name,
-			@Min(value = 1000, message = "Minimum balance is 1000") Double balance,
-			@NotBlank(message = "Email cannot be blank") @Email(message = "Email should be valid") String email,
-			@NotBlank(message = "Password cannot be blank") @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$", message = "Password must be between 8 and 20 characters and contain at least one uppercase letter, one lowercase letter, one digit, and one special character") String password,
-			@NotBlank(message = "Confirm Password cannot be blank") String confirmPassword) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.balance = balance;
-		this.email = email;
-		this.password = password;
-		this.confirmPassword = confirmPassword;
-	}
-
+	
 	public Integer getId() {
 		return id;
 	}

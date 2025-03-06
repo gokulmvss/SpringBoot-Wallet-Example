@@ -82,5 +82,9 @@ public class WalletController {
 	public Wallet logintoWallet(@RequestBody userLoginDTO uldto) throws WalletException{
 		return this.walletService.logintoWallet(uldto.getEmailInput(),uldto.getPasswordInput());
 	}
+	@PostMapping("/wallet/company/add/{id}")
+	public Wallet addWallettoCompany(@RequestBody Wallet wallet,@PathVariable("id") Integer Id) {
+		return this.walletService.createWalletForCOmpany(wallet,Id);
+	}
 	
 }

@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.springframework.data.domain.Page;
 
+import jakarta.validation.Valid;
+
 
 // import org.springframework.stereotype.Component;
 
@@ -28,4 +30,6 @@ public interface WalletService {
 	Page<Wallet> getWalletsPaginated(Pageable pageable);
 	Wallet addaddresstowallet(Address address, String email)throws WalletException;
 	Double withdrawFundswithtransactioninfo(String email, Double amount)throws WalletException;
+	
+	Wallet createWalletForCOmpany(@Valid Wallet wallet, Integer id);
 }

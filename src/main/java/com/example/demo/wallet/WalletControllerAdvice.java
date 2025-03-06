@@ -21,7 +21,7 @@ public class WalletControllerAdvice {
 //		It provides information about what went wrong.
 	}
 	
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseStatus(HttpStatus.BAD_REQUEST) // this is for validation; add this before doing validations or else it wont work
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public Map<String, String> handleValidationExceptions(
 	  MethodArgumentNotValidException ex) {
@@ -33,5 +33,43 @@ public class WalletControllerAdvice {
 	    });
 	    return errors;
 	}	
+	/*
+	 * This piece of code is a custom exception handler in a Spring Boot application. It's designed to handle validation errors that occur when an incoming request contains invalid data.
+
+Here's a breakdown of what it does:
+
+Annotations
+@ResponseStatus(HttpStatus.BAD_REQUEST): This annotation ensures that when this exception handler is triggered, the response status will be set to HTTP 400 Bad Request. This tells the client that their request was invalid.
+
+@ExceptionHandler(MethodArgumentNotValidException.class): This annotation indicates that this method should handle MethodArgumentNotValidException, which is the exception thrown when a request body validation fails.
+
+Method Explanation
+handleValidationExceptions(MethodArgumentNotValidException ex):
+
+This method takes a MethodArgumentNotValidException as a parameter. This exception contains information about the validation errors.
+
+It creates a Map<String, String> to store error messages, where the key is the field name that caused the validation error, and the value is the error message.
+
+Inside the Method
+ex.getBindingResult().getAllErrors().forEach((error) -> {...}):
+
+This iterates over all validation errors.
+
+String fieldName = ((FieldError) error).getField():
+
+Retrieves the name of the field that caused the validation error.
+
+String errorMessage = error.getDefaultMessage():
+
+Retrieves the default error message for the validation error.
+
+errors.put(fieldName, errorMessage):
+
+Adds the field name and error message to the errors map.
+
+return errors:
+
+Returns the map of field names and error messages to the client as the response body.
+	 */
 	
 }

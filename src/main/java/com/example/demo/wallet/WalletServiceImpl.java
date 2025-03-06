@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 @Service
 public class WalletServiceImpl implements WalletService {
@@ -180,6 +181,17 @@ public class WalletServiceImpl implements WalletService {
 		WalletToBeOpdated.getTransactions().add(newTransaction);
 		this.walletRepositoty.save(WalletToBeOpdated);
 		return WalletToBeOpdated.getBalance();
+	}
+	
+	@Autowired
+	private CompanyRepository companyrepository;
+	@Override
+	public Wallet createWalletForCOmpany(@Valid Wallet wallet, Integer id) {
+		Optional<Company> companyRetrieved = this.companyrepository.findById(id);
+		Company c = companyRetrieved.orElse(null);
+		wallet.setCompany(c);
+		Wallet newwallet=this.walletRepositoty.save(wallet);
+		return newwallet;
 	}
 
 }
